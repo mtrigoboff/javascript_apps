@@ -1,0 +1,81 @@
+<html>
+
+<head>
+</head>
+
+<body>
+
+	<h2>Chart Axis Numbers</h2>
+	<p style="font: 15px Arial"><i>written for Multnomah County Library, Adult Literacy Tutoring</i></p>
+	<p style="font: 12px Arial"><i>by Michael Trigoboff</i></p>
+	<br />
+	
+	<canvas id="canvas" onclick="coordinate(event)" width="800" height="100">
+	Chart Coordinates Demo is not supported in this browser.
+    </canvas>
+
+	<script>
+		// called when the cursor moves over the canvas,
+		// calculates and displays the X and Y coordinates
+		function coordinate(event) {
+			// adjust coordinate values to displayed X and Y axes
+			var xCoord = Math.round(((event.clientX - 58) / xMax) * xAxisMax);
+
+			// limit X display to X axis
+			if (xCoord < 0)
+				xCoord = 0;
+			else if (xCoord > xAxisMax)
+				xCoord = xAxisMax;
+
+			// display coordinates
+			document.getElementById('xCoord').value = xCoord;
+		}
+		
+		function printXLabel(label, x) {
+			labelY = cvsHeight - margin;
+			labelWidth = ctx.measureText(label).width;
+			ctx.strokeText(label, x - labelWidth / 2, labelY + 21);
+			ctx.moveTo(x, labelY);
+			ctx.lineTo(x, labelY + 7);
+			ctx.stroke()
+		}
+		
+		var cvs = document.getElementById('canvas');
+		var ctx = cvs.getContext("2d");
+		var cvsWidth = cvs.getAttribute('width');
+		var cvsHeight = cvs.getAttribute('height');
+		var margin = 50;
+		var xMax = 700;
+		var xAxisMax = 400;
+		var xAxisLgth = cvsWidth - 2 * margin;
+		
+		ctx.fillStyle = 'AntiqueWhite';
+		ctx.fillRect(0, 0, cvsWidth, cvsHeight);
+		ctx.strokeStyle = 'DarkGoldenRod';
+		ctx.strokeRect(0, 0, cvsWidth, cvsHeight);
+		
+		ctx.strokeStyle = 'black';
+		ctx.font = '12px arial';
+		
+		// display X axis
+		ctx.moveTo(margin, cvsHeight - margin);
+		ctx.lineTo(cvsWidth - margin, cvsHeight - margin);
+		ctx.stroke();
+		printXLabel('0',   margin);
+		printXLabel('100', margin + xAxisLgth / 4);
+		printXLabel('200', margin + xAxisLgth / 2);
+		printXLabel('300', margin + 3 * xAxisLgth / 4);
+		printXLabel('400', margin + xAxisLgth);
+		
+	</script>
+
+	<br />
+
+	<!-- X coordinate is displayed in this variable -->
+	<br />
+	You clicked at:&nbsp;&nbsp;
+	<input type="text" id="xCoord" size="3" readonly>
+	<br />
+
+</body>
+</html>

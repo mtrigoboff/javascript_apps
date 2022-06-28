@@ -1,0 +1,117 @@
+<html>
+
+<head>
+</head>
+
+<body>
+
+	<h2>Chart Coordinates Demo</h2>
+	<h4><i>written for Miracle Johnson<br />
+	by Michael Trigoboff</i></h4>
+	<br />
+	
+	<canvas id="canvas" onmousemove="coordinate(event)" width="800" height="600">
+	Chart Coordinates Demo is not supported in this browser.
+    </canvas>
+
+	<script>
+		// called when the cursor moves over the canvas,
+		// calculates and displays the X and Y coordinates
+		function coordinate(event) {
+			// adjust coordinate values to displayed X and Y axes
+			var xCoord = Math.round(((event.clientX - 77) / xMax) * xAxisMax);
+			var yCoord = Math.round(((cvsHeight - event.clientY + 62) / yMax) * yAxisMax);
+
+			// limit X display to X axis
+			if (xCoord < 0)
+				xCoord = 0;
+			else if (xCoord > xAxisMax)
+				xCoord = xAxisMax;
+			
+			// limit Y display to Y axis
+			if (yCoord < 0)
+				yCoord = 0;
+			else if (yCoord > yAxisMax)
+				yCoord = yAxisMax;
+
+			// display coordinates
+			document.getElementById('xCoord').value = xCoord;
+			document.getElementById('yCoord').value = yCoord;
+		}
+		
+		function printXLabel(label, x) {
+			labelY = cvsHeight - margin;
+			labelWidth = ctx.measureText(label).width;
+			ctx.strokeText(label, x - labelWidth / 2, labelY + 21);
+			ctx.moveTo(x, labelY);
+			ctx.lineTo(x, labelY + 7);
+			ctx.stroke()
+		}
+		
+		function printYLabel(label, y) {
+			labelX = margin;
+			labelMT = ctx.measureText(label);
+			labelHeight = labelMT.actualBoundingBoxAscent + labelMT.actualBoundingBoxDescent;
+			ctx.strokeText(label, labelX - labelMT.width - 11, y + labelHeight / 2);
+			ctx.moveTo(labelX - 7, y);
+			ctx.lineTo(labelX, y);
+			ctx.stroke()
+		}
+		
+		var cvs = document.getElementById('canvas');
+		var ctx = cvs.getContext("2d");
+		var cvsWidth = cvs.getAttribute('width');
+		var cvsHeight = cvs.getAttribute('height');
+		var margin = 70;
+		var xMax = 660;
+		var yMax = 460;
+		var xAxisMax = 400;
+		var yAxisMax = 300;
+		var xAxisLgth = cvsWidth - 2 * margin;
+		var yAxisLgth = cvsHeight - 2 * margin;
+		var xAxisDrop = 20;
+		
+		ctx.fillStyle = 'AntiqueWhite';
+		ctx.fillRect(0, 0, cvsWidth, cvsHeight);
+		ctx.strokeStyle = 'DarkGoldenRod';
+		ctx.strokeRect(0, 0, cvsWidth, cvsHeight);
+		
+		ctx.strokeStyle = 'black';
+		ctx.font = '12px arial';
+		
+		// display X axis
+		ctx.moveTo(margin, cvsHeight - margin);
+		ctx.lineTo(cvsWidth - margin, cvsHeight - margin);
+		ctx.stroke();
+		printXLabel('0',   margin);
+		printXLabel('100', margin + xAxisLgth / 4);
+		printXLabel('200', margin + xAxisLgth / 2);
+		printXLabel('300', margin + 3 * xAxisLgth / 4);
+		printXLabel('400', margin + xAxisLgth);
+
+		// display Y axis
+		ctx.moveTo(margin, margin);
+		ctx.lineTo(margin, cvsHeight - margin);
+		ctx.stroke();
+		printYLabel('300', margin);
+		printYLabel('200', margin + yAxisLgth / 3);
+		printYLabel('100', margin + 2 * yAxisLgth / 3);
+		printYLabel('0'  , margin + yAxisLgth);
+		
+	</script>
+
+	<br />
+
+	<!-- X coordinate is displayed in this variable -->
+	<br />
+	X (horizontal)&nbsp;&nbsp;
+	<input type="text" id="xCoord">
+	<br />
+
+	<!-- Y coordinate is stored in this variable -->
+	<br />
+	Y (vertical)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="text" id="yCoord">
+
+</body>
+</html>
