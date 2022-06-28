@@ -15,11 +15,25 @@
     </canvas>
 
 	<script>
+		var cvs = document.getElementById('canvas');
+		var ctx = cvs.getContext("2d");
+		var cvsWidth = cvs.getAttribute('width');
+		var cvsHeight = cvs.getAttribute('height');
+		var margin = 50;
+		var xMax = 700;
+		var xAxisMax = 400;
+		var xAxisLgth = cvsWidth - 2 * margin;
+		var rectFillColor = 'AntiqueWhite';
+		var rectLineColor = 'DarkGoldenRod';
+		var prevDotX = -1;
+
 		// called when the cursor moves over the canvas,
 		// calculates and displays the X and Y coordinates
 		function coordinate(event) {
 			// adjust coordinate values to displayed X and Y axes
 			var xCoord = Math.round(((event.clientX - 58) / xMax) * xAxisMax);
+
+			dotX = event.clientX - 8;
 
 			// limit X display to X axis
 			if (xCoord < 0)
@@ -29,6 +43,9 @@
 
 			// display coordinates
 			document.getElementById('xCoord').value = xCoord;
+			drawCanvas(dotX);	// need to do this twice ...
+			drawCanvas(dotX);	// ... to erase outline of previous dot
+			prevDotX = dotX;
 		}
 		
 		function printXLabel(label, x) {
@@ -39,33 +56,49 @@
 			ctx.lineTo(x, labelY + 7);
 			ctx.stroke()
 		}
+
+		function drawDot(x, y, radius, color) {
+			ctx.beginPath();
+			ctx.arc(x, y, 4, 0, 2 * Math.PI);
+			ctx.strokeStyle = color;
+			ctx.stroke();
+			ctx.fillStyle = color;
+			ctx.fill();
+			}
+			
+		function drawCanvas(dotX) {
+			ctx.fillStyle = rectFillColor;
+			ctx.fillRect(0, 0, cvsWidth, cvsHeight);
+			ctx.strokeStyle = rectLineColor;
+			ctx.strokeRect(0, 0, cvsWidth, cvsHeight);
+			
+			ctx.strokeStyle = 'black';
+			ctx.font = '12px arial';
+			
+			// display X axis
+			ctx.moveTo(margin, cvsHeight - margin);
+			ctx.lineTo(cvsWidth - margin, cvsHeight - margin);
+			ctx.stroke();
+			printXLabel('0',   margin);
+			printXLabel('100', margin + xAxisLgth / 4);
+			printXLabel('200', margin + xAxisLgth / 2);
+			printXLabel('300', margin + 3 * xAxisLgth / 4);
+			printXLabel('400', margin + xAxisLgth);
+			
+			if (dotX > -1) {
+				if (prevDotX > -1) {
+					drawDot(dotX, cvsHeight - margin, 8, rectFillColor);
+					}
+				ctx.beginPath();
+				drawDot(dotX, cvsHeight - margin, 4, 'red');
+				ctx.strokeStyle = 'red';
+				ctx.stroke();
+				ctx.fillStyle = 'red';
+				ctx.fill();
+				}
+		}
 		
-		var cvs = document.getElementById('canvas');
-		var ctx = cvs.getContext("2d");
-		var cvsWidth = cvs.getAttribute('width');
-		var cvsHeight = cvs.getAttribute('height');
-		var margin = 50;
-		var xMax = 700;
-		var xAxisMax = 400;
-		var xAxisLgth = cvsWidth - 2 * margin;
-		
-		ctx.fillStyle = 'AntiqueWhite';
-		ctx.fillRect(0, 0, cvsWidth, cvsHeight);
-		ctx.strokeStyle = 'DarkGoldenRod';
-		ctx.strokeRect(0, 0, cvsWidth, cvsHeight);
-		
-		ctx.strokeStyle = 'black';
-		ctx.font = '12px arial';
-		
-		// display X axis
-		ctx.moveTo(margin, cvsHeight - margin);
-		ctx.lineTo(cvsWidth - margin, cvsHeight - margin);
-		ctx.stroke();
-		printXLabel('0',   margin);
-		printXLabel('100', margin + xAxisLgth / 4);
-		printXLabel('200', margin + xAxisLgth / 2);
-		printXLabel('300', margin + 3 * xAxisLgth / 4);
-		printXLabel('400', margin + xAxisLgth);
+		drawCanvas(-1)
 		
 	</script>
 
