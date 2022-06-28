@@ -25,7 +25,6 @@
 		var xAxisLgth = cvsWidth - 2 * margin;
 		var rectFillColor = 'AntiqueWhite';
 		var rectLineColor = 'DarkGoldenRod';
-		var prevDotX = -1;
 
 		// called when the cursor moves over the canvas,
 		// calculates and displays the X and Y coordinates
@@ -45,7 +44,6 @@
 			document.getElementById('xCoord').value = xCoord;
 			drawCanvas(dotX);	// need to do this twice ...
 			drawCanvas(dotX);	// ... to erase outline of previous dot
-			prevDotX = dotX;
 		}
 		
 		function printXLabel(label, x) {
@@ -85,17 +83,8 @@
 			printXLabel('300', margin + 3 * xAxisLgth / 4);
 			printXLabel('400', margin + xAxisLgth);
 			
-			if (dotX > -1) {
-				if (prevDotX > -1) {
-					drawDot(dotX, cvsHeight - margin, 8, rectFillColor);
-					}
-				ctx.beginPath();
+			if (dotX > -1)
 				drawDot(dotX, cvsHeight - margin, 4, 'red');
-				ctx.strokeStyle = 'red';
-				ctx.stroke();
-				ctx.fillStyle = 'red';
-				ctx.fill();
-				}
 		}
 		
 		drawCanvas(-1)
