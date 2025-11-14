@@ -5,16 +5,59 @@
 
 <body>
 
-	<h2>Chart Coordinates Demo</h2>
+	<h2>Chart Coordinates Demox</h2>
 	<p><i></p>by Michael Trigoboff</i></p>
 	<p>Back to the <a href="index.html">home page</a>.</p>
 	<p>Move your cursor over the chart area, or tap if using a tablet.</p>
 	
-	<canvas id="canvas" onmousemove="handleMouseMove(event)" width="800" height="600">
+	<canvas id="canvas"
+		onclick="handleClick(event)"
+		onmousemove="handleMouseMove(event)"
+		width="800" height="600">
 	Chart Coordinates Demo is not supported in this browser.
     </canvas>
 
 	<script>
+
+// called when the mouse is clicked on the canvas,
+		// displays the red dot
+		function handleClick(event) {
+			var xClick = event.clientX;
+			var yClick = event.clientY;
+			var xCoord = Math.round((xClick - xClickMin) / (xClickMax - xClickMin) * xAxisMax);
+			var yCoord = Math.round((yClick - yClickMin) / (yClickMax - yClickMin) * yAxisMax);
+
+			// limit X display to X axis
+			if (xCoord < 0) {
+				xCoord = 0;
+				xClick = xClickMin;
+				}
+			else if (xCoord > xAxisMax) {
+				xCoord = xAxisMax;
+				xClick = xClickMax;
+				}
+
+			// limit Y display to Y axis
+			if (yCoord < 0) {
+				yCoord = 0;
+				yClick = yClickMin;
+				}
+			else if (yCoord > yAxisMax) {
+				yCoord = yAxisMax;
+				yClick = yClickMax;
+				}
+
+			// display coordinates
+			document.getElementById('xCoord').value = xCoord;
+			document.getElementById('yCoord').value = yCoord;
+			
+			// draw red dot
+			dotX = xClick - 8;
+			dotY = yClick - 8;
+			drawCanvas(dotX, dotY);	// need to do this twice ...
+			drawCanvas(dotX, dotY);	// ... to erase outline of previous dot
+		}
+		
 		// called when the cursor moves over the canvas,
 		// calculates and displays the X and Y coordinates
 		function handleMouseMove(event) {
@@ -56,6 +99,39 @@
 			ctx.moveTo(labelX - 7, y);
 			ctx.lineTo(labelX, y);
 			ctx.stroke()
+		}
+		
+		function drawDot(x, y, radius, color) {
+			ctx.beginPath();
+			ctx.arc(x, y, 4, 0, 2 * Math.PI);
+			ctx.strokeStyle = color;
+			ctx.stroke();
+			ctx.fillStyle = color;
+			ctx.fill();
+			}
+			
+		function drawCanvas(dotX, dotY) {
+			ctx.fillStyle = rectFillColor;
+			ctx.fillRect(0, 0, cvsWidth, cvsHeight);
+			ctx.strokeStyle = rectLineColor;
+			ctx.strokeRect(0, 0, cvsWidth, cvsHeight);
+			
+			ctx.strokeStyle = 'black';
+			ctx.font = '12px arial';
+			
+			// display X axis
+			axisY = cvsHeight / 2;
+			ctx.moveTo(margin, axisY);
+			ctx.lineTo(cvsWidth - margin, axisY);
+			ctx.stroke();
+			printXLabel('0',   margin, axisY);
+			printXLabel('100', margin + xAxisLgth / 4, axisY);
+			printXLabel('200', margin + xAxisLgth / 2, axisY);
+			printXLabel('300', margin + 3 * xAxisLgth / 4, axisY);
+			printXLabel('400', margin + xAxisLgth, axisY);
+			
+			if (dotX > -1 && dotY > -1)
+				drawDot(dotX, axisY, 4, 'red');
 		}
 		
 		var cvs = document.getElementById('canvas');
